@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def main():
     fs = 44100
-    hpsz = 10 # ms
+    hpsz = 20 # ms
     pesto_model = load_model("mir-1k_g7", step_size=hpsz, sampling_rate=fs)
     pesto_model.eval()
     mix_levels = [0.0, 0.1, 0.2, 0.3, 0.6, 0.9]
@@ -27,7 +27,7 @@ def main():
         md = torch.utils.data.DataLoader(MIRDataset("mdb_stem_synth", mix=mix), batch_size=1, shuffle=True, drop_last=False)
         for audio, times, freqs in tqdm(md):
             with torch.no_grad():
-                f0_pred, conf, amp = pesto_model(
+                f0_pred, _, _ = pesto_model(
                 audio,
                 convert_to_freq=True,
                 return_activations=False,
